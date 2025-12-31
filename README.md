@@ -1,16 +1,15 @@
 ## Hi there 👋
 
-<!--
-**blentakle-droid/blentakle-droid** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+## I'm Blen 👩🏿
 
-Here are some ideas to get you started:
+## I'm working on improving a basic social media app I made with firebase
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+## I'm learning (or soon will) backend
+
+## I'm looking for help with places to learn backend
+
+## Call me at (470) - 739 - 0140
+
+## Pronouns are: She, her
+
+## I'm 9!
