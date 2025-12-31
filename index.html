@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Take care of a digital pet!</title>
+    <style>
+        body {
+            background-color: #92ecff;
+            margin: 100px;
+            font-family: sans-serif;
+        }
+
+        button {
+            background-color: #59bab9;
+            font-family: cursive;
+            padding: 6px 10px;
+            margin: 5px;
+        }
+
+        .stat-container {
+            width: 300px;
+            height: 25px;
+            background-color: #ccefff;
+            margin: 10px auto;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .stat-bar {
+            height: 100%;
+            width: 50%;
+            background-color: #59bab9;
+            text-align: center;
+            color: white;
+            line-height: 25px;
+            font-weight: bold;
+            transition: width 0.3s;
+        }
+
+        span {
+            display: block;
+            text-align: center;
+            font-size: 150px;
+            margin: 20px auto;
+        }
+
+        p {
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<h1 id="take-care-of-pet-h1">Take care of a pet!</h1>
+<button id="begin-button">Begin➡️️</button>
+
+<script>
+    var beginButton = document.getElementById("begin-button");
+    var takeCareOfPetSign = document.getElementById("take-care-of-pet-h1");
+
+    var hungerLevel = 50;
+    var happinessLevel = 50;
+    var energyLevel = 50;
+    // sound
+    function beep(frequency, duration) {
+    var context = new AudioContext();            // Creates a mini sound system
+    var oscillator = context.createOscillator(); // Creates a tone generator
+    oscillator.type = "square";                  // Type of wave (sound shape)
+    oscillator.frequency.value = frequency;     // Frequency in Hz (pitch)
+    oscillator.connect(context.destination);    // Connect sound to your speakers
+    oscillator.start();                          // Start playing the sound
+    oscillator.stop(context.currentTime + duration/1000); // Stop after duration
+}
+
+
+    beginButton.addEventListener("click", function() {
+        beginButton.remove();
+        takeCareOfPetSign.remove();
+
+        var instructionsForName = document.createElement("h1");
+        instructionsForName.textContent = "First, come up with a name for your pet";
+
+        var NameInput = document.createElement("input");
+        NameInput.placeholder = "Type name here";
+
+        var continueButton = document.createElement("button");
+        continueButton.textContent = "Continue";
+
+        document.body.appendChild(instructionsForName);
+        document.body.appendChild(NameInput);
+        document.body.appendChild(continueButton);
+
+        continueButton.addEventListener("click", function() {
+            var petName = NameInput.value || "Buddy"; // default name if empty
+            instructionsForName.remove();
+            NameInput.remove();
+            continueButton.remove();
+
+            // Ticks and goal
+            var ticks = 0;
+            var goalTicks = 10;
+
+            // Title and pet
+            var title = document.createElement("h1");
+            title.textContent = "This is " + petName;
+            var pet = document.createElement("span");
+            pet.textContent = "🐶";
+
+            document.body.appendChild(title);
+            document.body.appendChild(pet);
+
+            // Progress bars
+            var createBar = function(label, value) {
+                var container = document.createElement("div");
+                container.className = "stat-container";
+                var bar = document.createElement("div");
+                bar.className = "stat-bar";
+                bar.textContent = label;
+                bar.style.width = value + "%";
+                container.appendChild(bar);
+                document.body.appendChild(container);
+                return bar;
+            };
+
+            var hungerBar = createBar("Hunger", hungerLevel);
+            var happinessBar = createBar("Happiness", happinessLevel);
+            var energyBar = createBar("Energy", energyLevel);
+
+            // Update bars
+            var updateBars = function() {
+                hungerBar.style.width = Math.max(hungerLevel,0) + "%";
+                happinessBar.style.width = Math.max(happinessLevel,0) + "%";
+                energyBar.style.width = Math.max(energyLevel,0) + "%";
+            };
+
+            // Buttons
+            var feedButton = document.createElement("button");
+            feedButton.textContent = "Feed 🍌";
+            var playButton = document.createElement("button");
+            playButton.textContent = "Play 🛝";
+            var sleepButton = document.createElement("button");
+            sleepButton.textContent = "Sleep 🛏️";
+
+            document.body.appendChild(feedButton);
+            document.body.appendChild(playButton);
+            document.body.appendChild(sleepButton);
+
+            feedButton.addEventListener("click", function() {
+                hungerLevel += 15;
+                happinessLevel -= 10;
+                energyLevel += 15;
+                updateBars();
+            });
+            playButton.addEventListener("click", function() {
+                happinessLevel += 15;
+                hungerLevel -= 5;
+                updateBars();
+            });
+            sleepButton.addEventListener("click", function() {
+                energyLevel += 15;
+                happinessLevel -= 5;
+                updateBars();
+            });
+
+            // Warning element
+            var warning = document.createElement("p");
+            document.body.appendChild(warning);
+
+            // Timer
+            var timer = setInterval(function() {
+                hungerLevel -= 5;
+                happinessLevel -= 10;
+                energyLevel -= 5;
+
+                updateBars();
+
+                // Pet mood
+                if (hungerLevel <= 10) pet.textContent = "🐕";
+                else if (happinessLevel <= 10) pet.textContent = "😢";
+                else if (energyLevel <= 10) pet.textContent = "😴";
+                else pet.textContent = "🐶";
+
+                // Warnings (if <=0)
+                if (hungerLevel <= 0) warning.textContent = "⚠️ Your pet is starving!";
+                else if (happinessLevel <= 0) warning.textContent = "⚠️ Your pet is unhappy!";
+                else if (energyLevel <= 0) warning.textContent = "⚠️ Your pet is exhausted!";
+                else warning.textContent = "";
+
+                // Win condition
+                ticks++;
+                if (ticks >= goalTicks) {
+                    warning.textContent = "🎉 You kept your pet alive! You win! Reload to play again";
+                    feedButton.remove();
+                    playButton.remove();
+                    sleepButton.remove();
+                    clearInterval(timer);
+                    beep(600, 300)
+                }
+
+                // Death condition
+                if (hungerLevel <= 0 && happinessLevel <= 0 && energyLevel <= 0) {
+                    pet.textContent = "☠️";
+                    warning.textContent = "Game Over! All stats went to 0. Reload to try again.";
+                    feedButton.remove();
+                    playButton.remove();
+                    sleepButton.remove();
+                    title.remove();
+                    clearInterval(timer);
+                    beep(200, 500)
+                }
+            }, 8000);
+        });
+    });
+</script>
+
+</body>
+</html>
